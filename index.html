@@ -1,0 +1,1057 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>點心描述遊戲平台</title>
+    <style>
+        :root {
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-red-500-rgb: 192, 21, 47;
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-bg-5: rgba(147, 51, 234, 0.08);
+            --color-success: var(--color-teal-500);
+            --color-error: var(--color-red-500);
+            --color-success-rgb: 33, 128, 141;
+            --color-error-rgb: 192, 21, 47;
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --font-family-base: "Inter", -apple-system, sans-serif;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --line-height-normal: 1.5;
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+            --focus-ring: 0 0 0 3px rgba(33, 128, 141, 0.4);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: rgba(31, 33, 33, 1);
+                --color-surface: rgba(38, 40, 40, 1);
+                --color-text: rgba(245, 245, 245, 1);
+                --color-text-secondary: rgba(167, 169, 169, 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: rgba(45, 166, 178, 1);
+                --color-primary-active: rgba(41, 150, 161, 1);
+                --color-border: rgba(119, 124, 124, 0.3);
+                --color-success: var(--color-teal-300);
+                --color-error: rgba(255, 84, 89, 1);
+                --color-success-rgb: 50, 184, 198;
+                --color-error-rgb: 255, 84, 89;
+                --focus-ring: 0 0 0 3px rgba(50, 184, 198, 0.4);
+            }
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            padding: var(--space-32);
+            line-height: var(--line-height-normal);
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .game-title {
+            font-size: var(--font-size-3xl);
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: var(--space-24);
+        }
+
+        .instructions-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            border: 2px solid var(--color-border);
+            box-shadow: var(--shadow-md);
+            max-width: 800px;
+            margin: 0 auto var(--space-32);
+        }
+
+        .four-parts {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-16);
+        }
+
+        .part {
+            background: var(--color-bg-1);
+            border-radius: var(--radius-md);
+            padding: var(--space-16);
+            text-align: center;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .part:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .part.taste { background: var(--color-bg-4); border-color: rgba(239, 68, 68, 0.3); }
+        .part.aroma { background: var(--color-bg-5); border-color: rgba(147, 51, 234, 0.3); }
+        .part.appearance { background: var(--color-bg-3); border-color: rgba(34, 197, 94, 0.3); }
+        .part.special { background: var(--color-bg-2); border-color: rgba(245, 158, 11, 0.3); }
+
+        .part-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-8);
+        }
+
+        .part-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .part-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .game-instructions {
+            background: var(--color-bg-1);
+            padding: var(--space-20);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-24);
+            border: 1px solid var(--color-border);
+        }
+
+        .game-instructions p {
+            margin-bottom: var(--space-12);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .game-instructions ol {
+            padding-left: var(--space-20);
+        }
+
+        .btn {
+            background: var(--color-primary);
+            color: var(--color-background);
+            padding: var(--space-12) var(--space-24);
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-md);
+            transition: background var(--duration-fast) var(--ease-standard);
+        }
+
+        .btn:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .demo-section {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            margin-bottom: var(--space-20);
+            border: 2px solid var(--color-border);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .demo-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .demo-section.taste { border-color: rgba(239, 68, 68, 0.3); background: var(--color-bg-4); }
+        .demo-section.aroma { border-color: rgba(147, 51, 234, 0.3); background: var(--color-bg-5); }
+        .demo-section.appearance { border-color: rgba(34, 197, 94, 0.3); background: var(--color-bg-3); }
+        .demo-section.special { border-color: rgba(245, 158, 11, 0.3); background: var(--color-bg-2); }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-16);
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            margin-right: var(--space-12);
+        }
+
+        .section-header h3 {
+            font-size: var(--font-size-xl);
+            margin: 0;
+        }
+
+        .dish-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-24);
+            max-width: 1000px;
+            margin: 0 auto var(--space-32);
+        }
+
+        .dish-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid var(--color-border);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .dish-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .dish-image {
+            width: 100%;
+            height: 150px;
+            border-radius: var(--radius-md);
+            background-size: cover;
+            background-position: center;
+            margin-bottom: var(--space-16);
+            background-color: var(--color-bg-1);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-24);
+            flex-wrap: wrap;
+            gap: var(--space-16);
+        }
+
+        .game-dish-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-16);
+        }
+
+        .dish-image-small {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--color-primary);
+            background-size: cover;
+            background-position: center;
+            background-color: var(--color-bg-1);
+        }
+
+        .game-content {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: var(--space-24);
+        }
+
+        .text-area {
+            flex: 1;
+        }
+
+        .vocabulary-bank {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            border: 2px solid var(--color-border);
+            width: 300px;
+            position: sticky;
+            top: var(--space-32);
+        }
+
+        .game-section {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            border: 2px solid var(--color-border);
+            margin-bottom: var(--space-20);
+        }
+
+        .game-section.taste { border-color: rgba(239, 68, 68, 0.3); }
+        .game-section.aroma { border-color: rgba(147, 51, 234, 0.3); }
+        .game-section.appearance { border-color: rgba(34, 197, 94, 0.3); }
+        .game-section.special { border-color: rgba(245, 158, 11, 0.3); }
+
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            height: 30px;
+            border: 2px dashed var(--color-border);
+            border-radius: var(--radius-sm);
+            margin: 0 var(--space-4);
+            background: var(--color-bg-1);
+            vertical-align: middle;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .blank.drag-over {
+            border-color: var(--color-primary);
+            background: var(--color-bg-3);
+            transform: scale(1.05);
+        }
+
+        .blank.filled {
+            border-style: solid;
+            border-color: var(--color-success);
+        }
+
+        .vocabulary-word {
+            background: var(--color-bg-2);
+            padding: var(--space-8) var(--space-12);
+            border-radius: var(--radius-md);
+            cursor: grab;
+            text-align: center;
+            margin-bottom: var(--space-8);
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .vocabulary-word:hover {
+            background: rgba(245, 158, 11, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .vocabulary-word.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .vocabulary-word.dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+
+        .filled-word {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-success);
+            color: var(--color-background);
+            padding: var(--space-4) var(--space-8);
+            border-radius: var(--radius-sm);
+            min-width: 80px;
+            height: 30px;
+            margin: 0 var(--space-4);
+            vertical-align: middle;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .filled-word:hover {
+            transform: scale(1.05);
+        }
+
+        .filled-word.correct {
+            background: var(--color-success);
+            color: var(--color-background);
+        }
+
+        .filled-word.incorrect {
+            background: var(--color-error);
+            color: var(--color-background);
+        }
+
+        .section-feedback {
+            margin-left: auto;
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .section-feedback.correct { color: var(--color-success); }
+        .section-feedback.incorrect { color: var(--color-error); }
+
+        .special-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: var(--space-12);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-md);
+            resize: vertical;
+            transition: border-color var(--duration-fast) var(--ease-standard);
+        }
+
+        .special-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: var(--focus-ring);
+        }
+
+        @media (max-width: 768px) {
+            .four-parts {
+                grid-template-columns: 1fr;
+            }
+
+            .game-content {
+                flex-direction: column-reverse;
+            }
+
+            .vocabulary-bank {
+                position: static;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .game-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .dish-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-8);
+            }
+
+            .section-feedback {
+                align-self: flex-end;
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dish-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-dish-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome-screen" class="screen active">
+        <h1 class="game-title">🥟 點心描述遊戲平台 🥢</h1>
+        <div class="instructions-card">
+            <h2>學習中式點心描述技巧</h2>
+            <div class="four-parts">
+                <div class="part taste">
+                    <div class="part-icon">👅</div>
+                    <div class="part-title">味</div>
+                    <div class="part-desc">口感與味道</div>
+                </div>
+                <div class="part aroma">
+                    <div class="part-icon">👃</div>
+                    <div class="part-title">香</div>
+                    <div class="part-desc">香氣與氣味</div>
+                </div>
+                <div class="part appearance">
+                    <div class="part-icon">👁️</div>
+                    <div class="part-title">色</div>
+                    <div class="part-desc">外觀與顏色</div>
+                </div>
+                <div class="part special">
+                    <div class="part-icon">✨</div>
+                    <div class="part-title">特別之處</div>
+                    <div class="part-desc">獨特特色</div>
+                </div>
+            </div>
+            <div class="game-instructions">
+                <p>📝 遊戲說明：</p>
+                <ol>
+                    <li>先觀看示範例子了解描述結構</li>
+                    <li>選擇你想練習的點心</li>
+                    <li>將右側詞彙拖拉到空格中完成描述（味、香、色三部分）</li>
+                    <li>在"特別之處"欄位自由書寫你的想法</li>
+                    <li>可以重複練習不同的點心</li>
+                </ol>
+            </div>
+            <div class="action-buttons">
+                <button class="btn" id="start-demo">開始示範</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="demo-screen" class="screen">
+        <h1 class="game-title">示範例子：蝦餃皇</h1>
+        <div class="demo-content">
+            <div class="demo-section taste">
+                <div class="section-header">
+                    <span class="section-icon">👅</span>
+                    <h3>味 (口感與味道)</h3>
+                </div>
+                <p>這道點心選用鮮活大蝦作為主要餡料，因為它肉質彈嫩，搭配竹筍丁和新鮮豬肉，吃起來清脆鮮甜，爽口多汁。</p>
+            </div>
+            <div class="demo-section aroma">
+                <div class="section-header">
+                    <span class="section-icon">👃</span>
+                    <h3>香 (香氣與氣味)</h3>
+                </div>
+                <p>我們用薑汁和米酒鎖住鮮味，散發蝦的清鮮香氣。或讓蝦肉散發清鮮香氣。</p>
+            </div>
+            <div class="demo-section appearance">
+                <div class="section-header">
+                    <span class="section-icon">👁️</span>
+                    <h3>色 (外觀與顏色)</h3>
+                </div>
+                <p>採用刀押麵皮的技術，將麵團押成薄如蟬翼的餃皮，讓蒸熟後的蝦餃，呈現出粉紅蝦肉。</p>
+            </div>
+            <div class="demo-section special">
+                <div class="section-header">
+                    <span class="section-icon">✨</span>
+                    <h3>特別之處</h3>
+                </div>
+                <p>值得一提的是，每一顆都由人手捏製18個皺摺，十分考驗師傅的手藝和經驗，也是粵菜精緻技藝的代表作。</p>
+            </div>
+            <div class="action-buttons">
+                <button class="btn" id="start-game">開始練習</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="selection-screen" class="screen">
+        <h1 class="game-title">選擇你想練習的點心</h1>
+        <div class="dish-grid">
+            <div class="dish-card" data-dish="beef_balls">
+                <div class="dish-image"></div>
+                <h3>牛肉球</h3>
+            </div>
+            <div class="dish-card" data-dish="char_siu_bao">
+                <div class="dish-image"></div>
+                <h3>叉燒包</h3>
+            </div>
+            <div class="dish-card" data-dish="egg_tart">
+                <div class="dish-image"></div>
+                <h3>酥皮蛋撻</h3>
+            </div>
+            <div class="dish-card" data-dish="soup_dumpling">
+                <div class="dish-image"></div>
+                <h3>魚翅灌湯餃</h3>
+            </div>
+            <div class="dish-card" data-dish="lava_bun">
+                <div class="dish-image"></div>
+                <h3>奶皇流沙包</h3>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button class="btn" id="back-to-demo">回到示範</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <div class="game-dish-info">
+                <div class="dish-image-small" id="current-dish-image"></div>
+                <h2 id="current-dish-name"></h2>
+            </div>
+            <div class="game-controls">
+                <button class="btn" id="check-answers">檢查答案</button>
+                <button class="btn" id="reset-game">重設</button>
+                <button class="btn" id="back-to-selection">選擇其他點心</button>
+            </div>
+        </div>
+        <div class="game-content">
+            <div class="vocabulary-bank">
+                <h3>詞彙庫</h3>
+                <div id="vocabulary-container"></div>
+            </div>
+            <div class="text-area">
+                <div class="game-section taste">
+                    <div class="section-header">
+                        <span class="section-icon">👅</span>
+                        <h3>味 (口感與味道)</h3>
+                        <span class="section-feedback" id="taste-feedback"></span>
+                    </div>
+                    <p id="taste-text" class="text-content"></p>
+                </div>
+                <div class="game-section aroma">
+                    <div class="section-header">
+                        <span class="section-icon">👃</span>
+                        <h3>香 (香氣與氣味)</h3>
+                        <span class="section-feedback" id="aroma-feedback"></span>
+                    </div>
+                    <p id="aroma-text" class="text-content"></p>
+                </div>
+                <div class="game-section appearance">
+                    <div class="section-header">
+                        <span class="section-icon">👁️</span>
+                        <h3>色 (外觀與顏色)</h3>
+                        <span class="section-feedback" id="appearance-feedback"></span>
+                    </div>
+                    <p id="appearance-text" class="text-content"></p>
+                </div>
+                <div class="game-section special">
+                    <div class="section-header">
+                        <span class="section-icon">✨</span>
+                        <h3>特別之處</h3>
+                    </div>
+                    <textarea class="special-textarea" id="special-text-input" placeholder="請自行補充"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gameData = {
+            dishes: {
+                beef_balls: {
+                    name: "牛肉球",
+                    image: "/images/image1.jpg",
+                    text: {
+                        taste: "這道點心選用了新鮮牛腿肉作為主料，因為它______，搭配清新的芹菜末和爽脆的木耳絲，入口______，還帶著蔬菜的______。",
+                        aroma: "我們特別用花椒水和醬油來醃製牛肉，讓牛肉散發出______，微微帶點______。",
+                        appearance: "製作時，我們採用______的技藝，將牛肉反覆捶打至黏性十足，讓蒸熟後的牛肉球，呈現出______的肉丸造型。"
+                    },
+                    vocabulary: [
+                        { text: "清爽脆感", pinyin: "qīng shuǎng cuì gǎn" },
+                        { text: "鮮嫩彈牙", pinyin: "xiān nèn tán yá" },
+                        { text: "紋理細緻、帶有豐富膠質", pinyin: "wén lǐ xì zhì、dài yǒu fēng fù jiāo zhì" },
+                        { text: "光滑緊實、圓潤可愛", pinyin: "guāng huá jǐn shí、yuán rùn kě ài" },
+                        { text: "麻香", pinyin: "má xiāng" },
+                        { text: "手工搗製", pinyin: "shǒu gōng dǎo zhì" },
+                        { text: "濃郁的鮮香", pinyin: "nóng yù de xiān xiāng" }
+                    ],
+                    answers: {
+                        taste: ["紋理細緻、帶有豐富膠質", "鮮嫩彈牙", "清爽脆感"],
+                        aroma: ["濃郁的鮮香", "麻香"],
+                        appearance: ["手工搗製", "光滑緊實、圓潤可愛"]
+                    }
+                },
+                char_siu_bao: {
+                    name: "叉燒包",
+                    image: "/images/image2.jpg",
+                    text: {
+                        taste: "這道點心選用優質五花肉製作叉燒，因為它______，搭配紅蔥頭和天然蜜糖，吃起來______，______。",
+                        aroma: "我們用低溫慢烤的方式處理叉燒，加入玫瑰露酒來提味，讓包子散發出______。",
+                        appearance: "製作時，我們採用______技藝，將麵團反覆揉壓後包入餡料，蒸熟後的外皮蓬鬆柔軟，呈現出______的包子造型。"
+                    },
+                    vocabulary: [
+                        { text: "甜鹹交融", pinyin: "tián xián jiāo róng" },
+                        { text: "肉質軟嫩多汁", pinyin: "ròu zhì ruǎn nèn duō zhī" },
+                        { text: "潔白如雪、圓潤討喜", pinyin: "jié bái rú xuě、yuán rùn tǎo xǐ" },
+                        { text: "獨特的花香與濃郁肉香", pinyin: "dú tè de huā xiāng yǔ nóng yù ròu xiāng" },
+                        { text: "傳統酵母發酵", pinyin: "chuán tǒng jiào mǔ fā jiào" },
+                        { text: "肥瘦均衡、口感豐富", pinyin: "féi shòu jūn héng、kǒu gǎn fēng fù" }
+                    ],
+                    answers: {
+                        taste: ["肥瘦均衡、口感豐富", "甜鹹交融", "肉質軟嫩多汁"],
+                        aroma: ["獨特的花香與濃郁肉香"],
+                        appearance: ["傳統酵母發酵", "潔白如雪、圓潤討喜"]
+                    }
+                },
+                egg_tart: {
+                    name: "酥皮蛋撻",
+                    image: "/images/image3.jpg",
+                    text: {
+                        taste: "這道點心選用本地農場直送的雞蛋和鮮奶製作蛋漿，因為這樣的蛋漿______，搭配進口香草籽的細膩香氣，吃起來______，______。",
+                        aroma: "我們用慢火熬煮蛋漿，加入楓糖漿增添層次，讓蛋撻散發出______與______。",
+                        appearance: "製作時，我們採用______的技藝，將麵團與牛油反覆摺疊壓製，讓蛋撻殼烘烤後，呈現出______造型。"
+                    },
+                    vocabulary: [
+                        { text: "溫潤奶香", pinyin: "wēn rùn nǎi xiāng" },
+                        { text: "色澤金黃、口感濃郁", pinyin: "sè zé jīn huáng、kǒu gǎn nóng yù" },
+                        { text: "金黃酥脆的千層", pinyin: "jīn huáng sū cuì de qiān céng" },
+                        { text: "甜而不膩", pinyin: "tián ér bù nì" },
+                        { text: "淡淡的楓糖芬芳", pinyin: "dàn dàn de fēng táng fēn fāng" },
+                        { text: "烘烤千層酥皮", pinyin: "hōng kǎo qiān céng sū pí" },
+                        { text: "入口滑順", pinyin: "rù kǒu huá shùn" }
+                    ],
+                    answers: {
+                        taste: ["色澤金黃、口感濃郁", "甜而不膩", "入口滑順"],
+                        aroma: ["溫潤奶香", "淡淡的楓糖芬芳"],
+                        appearance: ["烘烤千層酥皮", "金黃酥脆的千層"]
+                    }
+                },
+                soup_dumpling: {
+                    name: "魚翅灌湯餃",
+                    image: "/images/image4.jpg",
+                    text: {
+                        taste: "這道點心選用頂級魚翅與新鮮蟹黃作為主料，因為魚翅______，搭配瘦肉絲和高湯凍，入口______，______。",
+                        aroma: "我們用慢火熬製高湯凍，並加入米酒來提味，讓______與______完美綻放。",
+                        appearance: "製作時，我們採用______技藝，將湯汁與餡料封鎖在半透明的黃皮內，讓蒸熟後的湯餃呈現______的餃子造型。"
+                    },
+                    vocabulary: [
+                        { text: "手工摺疊薄皮", pinyin: "shǒu gōng zhé dié báo pí" },
+                        { text: "口感細膩、海鮮風味濃郁", pinyin: "kǒu gǎn xì nì、hǎi xiān fēng wèi nóng yù" },
+                        { text: "湯汁鮮美", pinyin: "tāng zhī xiān měi" },
+                        { text: "滑嫩多汁", pinyin: "huá nèn duō zhī" },
+                        { text: "晶瑩剔透、飽滿圓潤", pinyin: "jīng yíng tī tòu、bǎo mǎn yuán rùn" },
+                        { text: "湯汁的醇厚香氣", pinyin: "tāng zhī de chún hòu xiāng qì" },
+                        { text: "蟹黃的鮮甜", pinyin: "xiè huáng de xiān tián" }
+                    ],
+                    answers: {
+                        taste: ["口感細膩、海鮮風味濃郁", "湯汁鮮美", "滑嫩多汁"],
+                        aroma: ["蟹黃的鮮甜", "湯汁的醇厚香氣"],
+                        appearance: ["手工摺疊薄皮", "晶瑩剔透、飽滿圓潤"]
+                    }
+                },
+                lava_bun: {
+                    name: "奶皇流沙包",
+                    image: "/images/image5.jpg",
+                    text: {
+                        taste: "這道奶皇流沙包選用本地頂級鹹蛋黃作為主料，因為它______，搭配椰奶和白糖增添層次，入口______，______。",
+                        aroma: "我們用低溫慢煮餡料，加入香蘭葉來提味，讓______與______撲鼻而來。",
+                        appearance: "製作時，我們採用______技藝，將麵團皮包入流心餡後，再經二次蒸製，讓流沙包呈現出______的造型。"
+                    },
+                    vocabulary: [
+                        { text: "蛋黃的濃郁芬芳", pinyin: "dàn huáng de nóng yù fēn fāng" },
+                        { text: "質地綿密、風味濃厚", pinyin: "zhì dì mián mì、fēng wèi nóng hòu" },
+                        { text: "甜鹹平衡", pinyin: "tián xián píng héng" },
+                        { text: "柔滑順口", pinyin: "róu huá shùn kǒu" },
+                        { text: "椰香", pinyin: "yē xiāng" },
+                        { text: "潔白柔軟、圓潤討喜", pinyin: "jié bái róu ruǎn、yuán rùn tǎo xǐ" },
+                        { text: "雙重發酵麵團", pinyin: "shuāng chóng fā jiào miàn tuán" }
+                    ],
+                    answers: {
+                        taste: ["質地綿密、風味濃厚", "甜鹹平衡", "柔滑順口"],
+                        aroma: ["椰香", "蛋黃的濃郁芬芳"],
+                        appearance: ["雙重發酵麵團", "潔白柔軟、圓潤討喜"]
+                    }
+                }
+            }
+        };
+
+        let currentScreen = 'welcome';
+        let currentDish = null;
+        let draggedElement = null;
+        let speechSynthesis = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeSpeechSynthesis();
+            initializeEventListeners();
+            showScreen('welcome');
+        });
+
+        function initializeSpeechSynthesis() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis = window.speechSynthesis;
+            } else {
+                console.log('Speech synthesis not supported in this browser.');
+            }
+        }
+
+        function speakText(text) {
+            if (speechSynthesis && text) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.8;
+                utterance.pitch = 1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function initializeEventListeners() {
+            document.getElementById('start-demo').addEventListener('click', (e) => {
+                e.preventDefault();
+                showScreen('demo');
+            });
+            document.getElementById('start-game').addEventListener('click', (e) => {
+                e.preventDefault();
+                showScreen('selection');
+            });
+            document.getElementById('back-to-demo').addEventListener('click', (e) => {
+                e.preventDefault();
+                showScreen('demo');
+            });
+            document.getElementById('back-to-selection').addEventListener('click', (e) => {
+                e.preventDefault();
+                showScreen('selection');
+            });
+            document.getElementById('reset-game').addEventListener('click', (e) => {
+                e.preventDefault();
+                resetCurrentGame();
+            });
+            document.getElementById('check-answers').addEventListener('click', (e) => {
+                e.preventDefault();
+                checkAllAnswers();
+            });
+
+            document.querySelectorAll('.dish-card').forEach(card => {
+                const dishKey = card.getAttribute('data-dish');
+                const dishImage = card.querySelector('.dish-image');
+                if (gameData.dishes[dishKey].image) {
+                    dishImage.style.backgroundImage = `url(${gameData.dishes[dishKey].image})`;
+                    dishImage.style.backgroundSize = 'cover';
+                }
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    startGame(dishKey);
+                });
+            });
+        }
+
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            const targetScreen = document.getElementById(`${screenName}-screen`);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                currentScreen = screenName;
+            }
+        }
+
+        function startGame(dishKey) {
+            currentDish = dishKey;
+            const dish = gameData.dishes[dishKey];
+            const dishNameEl = document.getElementById('current-dish-name');
+            const dishImageEl = document.getElementById('current-dish-image');
+            dishNameEl.textContent = dish.name;
+            if (dishImageEl && dish.image) {
+                dishImageEl.style.backgroundImage = `url(${dish.image})`;
+                dishImageEl.style.backgroundSize = 'cover';
+                dishImageEl.setAttribute('alt', dish.name);
+            }
+            generateGameContent(dish);
+            showScreen('game');
+        }
+
+        function generateGameContent(dish) {
+            document.querySelectorAll('.text-content').forEach(content => {
+                content.innerHTML = '';
+            });
+            document.querySelectorAll('.section-feedback').forEach(feedback => {
+                feedback.innerHTML = '';
+            });
+
+            ['taste', 'aroma', 'appearance'].forEach(section => {
+                const text = dish.text[section];
+                const contentDiv = document.getElementById(`${section}-text`);
+                if (contentDiv && text) {
+                    contentDiv.innerHTML = createTextWithBlanks(text, section);
+                }
+            });
+
+            document.getElementById('special-text-input').value = '';
+            generateVocabularyBank(dish.vocabulary);
+            setTimeout(addDragAndDropListeners, 100);
+        }
+
+        function createTextWithBlanks(text, section) {
+            let blankId = 0;
+            return text.replace(/______/g, () => `<span class="blank" data-blank-id="${blankId++}" data-section="${section}"></span>`);
+        }
+
+        function generateVocabularyBank(vocabulary) {
+            const container = document.getElementById('vocabulary-container');
+            container.innerHTML = '';
+            vocabulary.forEach((wordObj, index) => {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'vocabulary-word';
+                wordElement.textContent = wordObj.text;
+                wordElement.draggable = true;
+                wordElement.setAttribute('data-word', wordObj.text);
+                wordElement.setAttribute('data-word-id', index);
+                wordElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (!wordElement.classList.contains('used')) {
+                        speakText(wordObj.text);
+                    }
+                });
+                container.appendChild(wordElement);
+            });
+        }
+
+        function addDragAndDropListeners() {
+            document.querySelectorAll('.vocabulary-word').forEach(word => {
+                word.addEventListener('dragstart', e => {
+                    draggedElement = e.target;
+                    e.target.classList.add('dragging');
+                    e.dataTransfer.setData('text/html', e.target.outerHTML);
+                    speakText(e.target.getAttribute('data-word'));
+                });
+                word.addEventListener('dragend', e => {
+                    e.target.classList.remove('dragging');
+                    draggedElement = null;
+                });
+            });
+
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    if (!blank.classList.contains('filled')) {
+                        e.dataTransfer.dropEffect = 'move';
+                    }
+                });
+                blank.addEventListener('dragenter', e => {
+                    e.preventDefault();
+                    if (!blank.classList.contains('filled')) {
+                        blank.classList.add('drag-over');
+                    }
+                });
+                blank.addEventListener('dragleave', e => {
+                    blank.classList.remove('drag-over');
+                });
+                blank.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const blank = e.target;
+            if (!blank.classList.contains('blank') || blank.classList.contains('filled')) return;
+
+            blank.classList.remove('drag-over');
+            if (draggedElement && draggedElement.classList.contains('vocabulary-word')) {
+                const word = draggedElement.getAttribute('data-word');
+                const wordId = draggedElement.getAttribute('data-word-id');
+                const filledWord = document.createElement('span');
+                filledWord.className = 'filled-word';
+                filledWord.textContent = word;
+                filledWord.setAttribute('data-word', word);
+                filledWord.setAttribute('data-word-id', wordId);
+                filledWord.setAttribute('data-section', blank.getAttribute('data-section'));
+                filledWord.addEventListener('click', () => returnWordToBank(filledWord));
+                blank.parentNode.replaceChild(filledWord, blank);
+                draggedElement.classList.add('used');
+                draggedElement.draggable = false;
+            }
+        }
+
+        function checkAllAnswers() {
+            if (!currentDish) return;
+            const dish = gameData.dishes[currentDish];
+            ['taste', 'aroma', 'appearance'].forEach(section => {
+                const correctAnswers = dish.answers[section];
+                const filledWords = document.querySelectorAll(`.filled-word[data-section="${section}"]`);
+                const feedbackEl = document.getElementById(`${section}-feedback`);
+                let allCorrect = true;
+                let correctCount = 0;
+
+                filledWords.forEach((word, index) => {
+                    const text = word.getAttribute('data-word');
+                    const isCorrect = correctAnswers[index] === text;
+                    word.classList.remove('correct', 'incorrect');
+                    word.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    if (isCorrect) correctCount++;
+                    else allCorrect = false;
+                });
+
+                if (filledWords.length < correctAnswers.length) allCorrect = false;
+                feedbackEl.textContent = allCorrect ? '✓' : '✗';
+                feedbackEl.classList.remove('correct', 'incorrect');
+                feedbackEl.classList.add(allCorrect ? 'correct' : 'incorrect');
+            });
+        }
+
+        function resetCurrentGame() {
+            if (currentDish) {
+                generateGameContent(gameData.dishes[currentDish]);
+            }
+        }
+
+        function returnWordToBank(filledWord) {
+            const wordId = filledWord.getAttribute('data-word-id');
+            const section = filledWord.getAttribute('data-section');
+            const blank = document.createElement('span');
+            blank.className = 'blank';
+            blank.setAttribute('data-section', section);
+            blank.addEventListener('dragover', e => {
+                e.preventDefault();
+                if (!blank.classList.contains('filled')) {
+                    e.dataTransfer.dropEffect = 'move';
+                }
+            });
+            blank.addEventListener('dragenter', e => {
+                e.preventDefault();
+                if (!blank.classList.contains('filled')) {
+                    blank.classList.add('drag-over');
+                }
+            });
+            blank.addEventListener('dragleave', e => {
+                blank.classList.remove('drag-over');
+            });
+            blank.addEventListener('drop', handleDrop);
+            filledWord.parentNode.replaceChild(blank, filledWord);
+            document.querySelectorAll('.vocabulary-word').forEach(word => {
+                if (word.getAttribute('data-word-id') === wordId) {
+                    word.classList.remove('used');
+                    word.draggable = true;
+                }
+            });
+            document.getElementById(`${section}-feedback`).textContent = '';
+        }
+    </script>
+</body>
+</html>
